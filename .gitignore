@@ -149,6 +149,8 @@ activemq-data/
 
 # Environments
 .env
+.env.*
+!.env.example
 .envrc
 .venv
 env/
@@ -216,3 +218,15 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Selenium UI test artifacts
+allure-results/
+allure-report/
+reports/
+test-results/
+logs/
+screenshots/
+data/downloads/*
+!data/downloads/.gitkeep
+*.har
+*.trace
