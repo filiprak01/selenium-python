@@ -1,8 +1,8 @@
 # Smoke Test Context
 
 Smoke tests cover fast, high-value framework-readiness checks and the initial Sauce Demo
-home-page load check. UI steps must use the framework step context so screenshots and
-English START/PASS/FAIL logs are produced consistently.
+home-page load check. UI steps must use the framework step context so English
+START/PASS/FAIL logs are produced consistently.
 After the Sauce Demo loaded-state assertion, capture an explicit screenshot step so
 the Allure report has a controlled post-assertion page image.
 

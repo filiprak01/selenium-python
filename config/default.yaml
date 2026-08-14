@@ -25,4 +25,4 @@ paths:
 
 evidence:
   screenshots_enabled: true
-  screenshot_after_steps: true
+  screenshot_after_steps: false

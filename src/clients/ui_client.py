@@ -89,13 +89,13 @@ class UIClient:
 
     @property
     def screenshot_after_steps(self) -> bool:
-        """Return whether named UI steps should automatically capture screenshots."""
+        """Return whether named UI steps automatically capture screenshots."""
 
         return self._screenshot_after_steps
 
     @contextmanager
     def step(self, name: str) -> Iterator[None]:
-        """Run an Allure step with lifecycle logging and screenshot evidence."""
+        """Run an Allure step with lifecycle logging and optional screenshot evidence."""
 
         step_name = name.strip()
         if not step_name:

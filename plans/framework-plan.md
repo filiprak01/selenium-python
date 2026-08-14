@@ -278,8 +278,9 @@ Planned Allure support:
 
 - Add `allure-pytest`.
 - Generate reports from pytest results.
-- Capture a screenshot after every named Allure step and attach it to that step.
-- Persist step screenshots under the configured `screenshots/` directory.
+- Capture screenshots through explicit screenshot steps by default.
+- Keep automatic screenshots after every named Allure step configurable and disabled by default for local, CI, and pipeline runs.
+- Persist screenshot-step evidence under the configured `screenshots/` directory.
 - Attach screenshots on failure.
 - Attach page source on failure.
 - Attach browser logs where available.
@@ -477,14 +478,14 @@ Generation rules should be strict enough that Codex or another discovery/generat
 - Implement separate locator modules.
 - Implement wait-backed page assertion helpers.
 - Implement configurable element visibility timeout and polling.
-- Implement per-step screenshots, execution logging, page source, browser log, and Allure failure hooks.
+- Implement explicit screenshot steps, optional per-step screenshots, execution logging, page source, browser log, and Allure failure hooks.
 
 ### Phase 4: First Application Smoke Test And Capability Verification
 
 - Add the Sauce Demo home-page object and separate logo locator.
 - Navigate to `https://sauce-demo.myshopify.com/` through `UIClient`.
 - Verify the page is loaded when `img[alt='Sauce Demo']` is visible within 5 seconds, polling every second.
-- Capture screenshots after the navigation and loaded-state verification steps.
+- Capture a screenshot through an explicit screenshot step after the loaded-state verification.
 - Log each step in English with START, PASS, or FAIL status.
 - Verify screenshot capability through the running browser test rather than unit or framework tests.
 - Add broader application page objects, locators, flows, and test cases incrementally.

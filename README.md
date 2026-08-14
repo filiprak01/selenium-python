@@ -42,7 +42,9 @@ The single test environment is configured in `config/default.yaml`. Paths are pr
 
 The source root is `src/`, with framework responsibilities kept in direct child directories: `assertions/`, `clients/`, `config/`, `flows/`, `locators/`, `logging/`, `models/`, `pages/`, and `webdriver/`; project-root-relative paths are defined in `src/project.py`. Framework capabilities are verified through browser tests against the configured test URL, starting with the Sauce Demo home-page smoke test. Broader application coverage will be added incrementally.
 
-The first page-load check waits up to 5 seconds for the Sauce Demo logo and polls once per second. Each named UI step logs its START/PASS/FAIL status in English. A screenshot is attached to every Allure step and also saved under `screenshots/`; failed browser tests additionally attach the execution log, page source, browser logs, and a failure screenshot.
+The first page-load check waits up to 5 seconds for the Sauce Demo logo and polls once per second. Each named UI step logs its START/PASS/FAIL status in English. Screenshots are captured only through explicit screenshot steps by default, such as `UIClient.capture_screenshot_step(...)`, and are saved under `screenshots/`; failed browser tests additionally attach the execution log, page source, browser logs, and a failure screenshot.
+
+Per-step screenshots are configurable in `config/default.yaml`. The default is `screenshot_after_steps: false` so local, CI, and pipeline runs stay lighter. Testers can set it to `true` when they need screenshot documentation after every named Allure UI step.
 
 Chrome is the first planned browser. Selenium Chrome setup will be implemented in the framework WebDriver factory and Chrome options modules, with browser behavior configured through YAML.
 

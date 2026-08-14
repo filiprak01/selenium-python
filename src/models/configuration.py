@@ -61,7 +61,7 @@ class EvidenceConfig:
     """Configuration for screenshot and report evidence capture."""
 
     screenshots_enabled: bool = True
-    screenshot_after_steps: bool = True
+    screenshot_after_steps: bool = False
 
 
 @dataclass(frozen=True, slots=True)
