@@ -46,6 +46,8 @@ The first page-load check waits up to 5 seconds for the Sauce Demo logo and poll
 
 Per-step screenshots are configurable in `config/default.yaml`. The default is `screenshot_after_steps: false` so local, CI, and pipeline runs stay lighter. Testers can set it to `true` when they need screenshot documentation after every named Allure UI step.
 
+At the start of every pytest session, the framework removes generated files from `allure-results/`, `allure-report/`, `screenshots/`, `logs/`, and `data/downloads/`. Static input data under `data/uploads/` and `data/fixtures/` is preserved.
+
 Chrome is the first planned browser. Selenium Chrome setup will be implemented in the framework WebDriver factory and Chrome options modules, with browser behavior configured through YAML.
 
 ## Test Commands
@@ -69,7 +71,7 @@ Run tests with Allure result output:
 poetry run pytest --alluredir=allure-results
 ```
 
-For a clean Allure results directory on each run:
+For a clean Allure results directory on each run, use:
 
 ```bash
 poetry run pytest --clean-alluredir --alluredir=allure-results
@@ -81,22 +83,26 @@ Run the smoke test and refresh Allure results:
 poetry run pytest tests/smoke --clean-alluredir --alluredir=allure-results
 ```
 
-Open the Allure report locally:
+Serve a fresh Allure report from the current result files:
 
 ```powershell
-allure.cmd open allure-results
+allure.cmd serve allure-results
 ```
 
 If PowerShell blocks scripts, run Allure through `cmd`:
 
 ```powershell
-cmd /c "allure open allure-results"
+cmd /c "allure serve allure-results"
 ```
+
+Do not open an old `allure-report/` directory after a new run. `allure-results/` contains raw test results for `allure serve`; `allure-report/` is a generated static report for `allure open`.
 
 Generate a static Allure report directory:
 
 ```powershell
+Remove-Item -LiteralPath .\allure-report -Recurse -Force -ErrorAction SilentlyContinue
 cmd /c "allure generate allure-results -o allure-report"
+cmd /c "allure open allure-report"
 ```
 
 Local runs are headed by default. GitHub Actions runs use headless mode by default.

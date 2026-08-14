@@ -110,6 +110,7 @@ Codex should treat this project as a test automation framework.
 - Capture screenshots, page source, and useful browser evidence on failure.
 - Capture screenshots through explicit screenshot steps by default.
 - Keep automatic screenshots after every named Allure UI step configurable and disabled by default for local, CI, and pipeline runs.
+- Clean generated Allure, screenshot, log, and download artifact directories before each pytest session starts.
 - Log every UI step in English with START, PASS, and FAIL states; attach execution logs to failed Allure results.
 - Local tests should run headed by default.
 - CI tests should run headless by default.

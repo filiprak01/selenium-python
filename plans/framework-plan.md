@@ -281,6 +281,7 @@ Planned Allure support:
 - Capture screenshots through explicit screenshot steps by default.
 - Keep automatic screenshots after every named Allure step configurable and disabled by default for local, CI, and pipeline runs.
 - Persist screenshot-step evidence under the configured `screenshots/` directory.
+- Clean generated `allure-results/`, `allure-report/`, `screenshots/`, `logs/`, and `data/downloads/` content before each pytest session.
 - Attach screenshots on failure.
 - Attach page source on failure.
 - Attach browser logs where available.
@@ -479,6 +480,7 @@ Generation rules should be strict enough that Codex or another discovery/generat
 - Implement wait-backed page assertion helpers.
 - Implement configurable element visibility timeout and polling.
 - Implement explicit screenshot steps, optional per-step screenshots, execution logging, page source, browser log, and Allure failure hooks.
+- Implement generated artifact cleanup before each pytest session starts.
 
 ### Phase 4: First Application Smoke Test And Capability Verification
 

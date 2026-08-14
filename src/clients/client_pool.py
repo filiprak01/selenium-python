@@ -26,7 +26,7 @@ class UIClientPool:
         base_url: str | None = None,
         timeout: float = 10.0,
         screenshots_enabled: bool = True,
-        screenshot_after_steps: bool = True,
+        screenshot_after_steps: bool = False,
     ) -> UIClient:
         """Create and register a new named client, rejecting duplicate names."""
 

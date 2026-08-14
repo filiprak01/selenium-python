@@ -35,7 +35,7 @@ class UIClient:
         base_url: str | None = None,
         timeout: float = 10.0,
         screenshots_enabled: bool = True,
-        screenshot_after_steps: bool = True,
+        screenshot_after_steps: bool = False,
     ) -> None:
         if timeout <= 0:
             raise ValueError("timeout must be greater than zero")

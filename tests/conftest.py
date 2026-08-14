@@ -15,8 +15,9 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from clients.ui_client import UIClient
 from config.loader import load_config
 from models.configuration import FrameworkConfig
-from project import DOWNLOADS_PATH
 from webdriver.factory import create_webdriver
+
+PRESERVED_ARTIFACT_NAMES = frozenset({".gitkeep"})
 
 
 def pytest_addoption(parser: pytest.Parser) -> None:
@@ -28,6 +29,21 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         default=False,
         help="Run browser tests in headless Chrome mode.",
     )
+
+
+def pytest_sessionstart(session: pytest.Session) -> None:
+    """Remove generated test artifacts before pytest and Allure create new output."""
+
+    del session
+    config = load_config()
+    for artifact_directory in (
+        config.paths.downloads,
+        config.paths.screenshots,
+        config.paths.logs,
+        config.paths.allure_results,
+        config.paths.reports,
+    ):
+        clean_artifact_directory(artifact_directory)
 
 
 @pytest.fixture(scope="session")
@@ -54,35 +70,6 @@ def execution_log_path(config: FrameworkConfig) -> Generator[Path, None, None]:
     finally:
         root_logger.removeHandler(file_handler)
         file_handler.close()
-
-
-@pytest.fixture(scope="session", autouse=True)
-def clean_downloads() -> None:
-    """Remove generated downloads while preserving committed test-data directories."""
-
-    DOWNLOADS_PATH.mkdir(parents=True, exist_ok=True)
-    for path in DOWNLOADS_PATH.iterdir():
-        if path.name == ".gitkeep":
-            continue
-        if path.is_dir():
-            shutil.rmtree(path)
-        else:
-            path.unlink()
-    return None
-
-
-@pytest.fixture(scope="session", autouse=True)
-def clean_screenshots(config: FrameworkConfig) -> None:
-    """Remove screenshots from previous runs before creating new step evidence."""
-
-    screenshot_directory = config.paths.screenshots
-    screenshot_directory.mkdir(parents=True, exist_ok=True)
-    for path in screenshot_directory.iterdir():
-        if path.is_dir():
-            shutil.rmtree(path)
-        else:
-            path.unlink()
-    return None
 
 
 @pytest.fixture
@@ -180,3 +167,16 @@ def attach_browser_evidence(browser: WebDriver) -> None:
             name="failure-browser-logs",
             attachment_type=AttachmentType.JSON,
         )
+
+
+def clean_artifact_directory(directory: Path) -> None:
+    """Remove generated files from a configured artifact directory."""
+
+    directory.mkdir(parents=True, exist_ok=True)
+    for path in directory.iterdir():
+        if path.name in PRESERVED_ARTIFACT_NAMES:
+            continue
+        if path.is_dir():
+            shutil.rmtree(path)
+        else:
+            path.unlink()
