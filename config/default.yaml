@@ -1,0 +1,28 @@
+environment:
+  name: test
+  base_url: https://sauce-demo.myshopify.com/
+
+browser:
+  name: chrome
+  headless: false
+
+timeouts:
+  implicit_seconds: 0
+  explicit_seconds: 10
+  element_visibility_seconds: 5
+  poll_interval_seconds: 1
+  page_load_seconds: 30
+  script_seconds: 30
+
+paths:
+  uploads: data/uploads
+  downloads: data/downloads
+  fixtures: data/fixtures
+  allure_results: allure-results
+  reports: allure-report
+  logs: logs
+  screenshots: screenshots
+
+evidence:
+  screenshots_enabled: true
+  screenshot_after_steps: true

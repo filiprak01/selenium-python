@@ -8,7 +8,8 @@ The repository should support both human-written and future AI-generated UI test
 
 ## Confirmed Decisions
 
-- Framework source code will live under `src/`.
+- `src/` is the source root. Framework code will live in its direct child directories, with `project.py` directly under `src/`.
+- Direct framework source directories will be `assertions/`, `clients/`, `config/`, `flows/`, `locators/`, `logging/`, `models/`, `pages/`, and `webdriver/`.
 - Tests will live in `tests/`.
 - Python target version will be 3.12.
 - Selenium will be used for browser automation.
@@ -25,7 +26,7 @@ The repository should support both human-written and future AI-generated UI test
 - Environment URLs and configurable framework values will live in `config/`.
 - Configuration will be loaded into Python dataclass models.
 - Pydantic can be considered later if stronger validation is needed.
-- Timeout constants will live in source-controlled models/constants under `src/`.
+- Timeout constants will live in `src/models/`.
 - OS-specific behavior will be represented in configuration where needed.
 - Project paths will derive from the repository root instead of hardcoded absolute paths.
 - A `project.py` module will define project-root-relative paths such as data, upload, download, fixture, config, report, log, and screenshot paths.
@@ -38,14 +39,14 @@ The repository should support both human-written and future AI-generated UI test
 - Ruff will be added for linting and formatting.
 - Selenium Grid and remote WebDriver are out of scope for the initial presentation framework.
 - Initial browser support will focus on Chrome while keeping browser selection configurable.
-- A lightweight framework setup test will validate configuration loading before real UI tests are added.
+- Framework capabilities will be verified through browser tests against the configured test URL, starting with the Sauce Demo home-page smoke test. Broader application test cases will be added incrementally.
 - Local `.env` files will be loaded with `python-dotenv`.
 - Pre-commit will be added later to run Ruff before commits.
 - Work should not happen directly on `main`; implementation branches should use `feature/<descriptive-name>`.
 - Agents should prefer scalable framework structure over short-term simplicity.
 - Functions and methods should include explicit return types.
 - Dependency versions and relevant package updates should be checked before implementation work that touches dependencies or integrations.
-- Subfolder `AGENTS.md` files should be added later to provide focused context for agents working in specific framework areas.
+- Subfolder `AGENTS.md` files provide focused context for agents working in specific framework areas.
 
 ## Proposed Project Structure
 
@@ -74,47 +75,41 @@ The repository should support both human-written and future AI-generated UI test
 |   |-- uploads/
 |   `-- fixtures/
 |-- src/
-|   `-- ui_testing_framework/
-|       |-- AGENTS.md
+|   |-- AGENTS.md
+|   |-- assertions/
+|   |   |-- __init__.py
+|   |   `-- page_assertions.py
+|   |-- clients/
+|   |   |-- __init__.py
+|   |   |-- client_pool.py
+|   |   `-- ui_client.py
+|   |-- config/
+|   |   |-- __init__.py
+|   |   `-- loader.py
+|   |-- flows/
+|   |   `-- __init__.py
+|   |-- locators/
+|   |   `-- __init__.py
+|   |-- logging/
+|   |   |-- __init__.py
+|   |   `-- pytest_logging.py
+|   |-- models/
+|   |   |-- __init__.py
+|   |   |-- configuration.py
+|   |   `-- constants.py
+|   |-- pages/
+|   |   |-- __init__.py
+|   |   |-- base_page.py
+|   |   `-- components/
+|   |       `-- __init__.py
+|   |-- project.py
+|   `-- webdriver/
 |       |-- __init__.py
-|       |-- assertions/
-|       |   |-- __init__.py
-|       |   `-- page_assertions.py
-|       |-- clients/
-|       |   |-- __init__.py
-|       |   |-- client_pool.py
-|       |   `-- ui_client.py
-|       |-- config/
-|       |   |-- __init__.py
-|       |   `-- loader.py
-|       |-- flows/
-|       |   |-- __init__.py
-|       |   `-- navigation.py
-|       |-- locators/
-|       |   |-- __init__.py
-|       |   `-- example_page_locators.py
-|       |-- logging/
-|       |   |-- __init__.py
-|       |   `-- pytest_logging.py
-|       |-- models/
-|       |   |-- __init__.py
-|       |   |-- configuration.py
-|       |   `-- constants.py
-|       |-- pages/
-|       |   |-- __init__.py
-|       |   |-- base_page.py
-|       |   `-- components/
-|       |       `-- __init__.py
-|       |-- project.py
-|       `-- webdriver/
-|           |-- __init__.py
-|           |-- chrome_options.py
-|           `-- factory.py
+|       |-- chrome_options.py
+|       `-- factory.py
 `-- tests/
     |-- AGENTS.md
     |-- conftest.py
-    |-- framework/
-    |   `-- test_configuration.py
     |-- smoke/
     |-- regression/
     `-- ui/
@@ -140,7 +135,7 @@ Responsibilities:
 - Assert behavior through page assertion helpers or dedicated assertion functions.
 - Attach useful evidence to Allure reports.
 
-Before real UI tests are added, the project should include a basic framework setup test that validates config loading and project path resolution.
+Framework capabilities should be verified through browser tests against the configured test URL. The first application smoke test verifies the Sauce Demo home-page logo; broader application test cases will be added incrementally.
 
 ### UI Client
 
@@ -206,7 +201,7 @@ Expected approach:
 
 ### Config
 
-Configuration files live in `config/` and are parsed into source models under `src/ui_testing_framework/models/`.
+Configuration files live in `config/` and are parsed into source models under `src/models/`.
 
 Likely configuration values:
 
@@ -220,13 +215,13 @@ Likely configuration values:
 - Allure evidence settings.
 - Optional test behavior flags.
 
-The config file format will be YAML. Timeout constants will live in `src/ui_testing_framework/models/constants.py`.
+The config file format will be YAML. Timeout constants will live in `src/models/constants.py`.
 
 Secrets must not be stored in config files. Local secrets will be loaded from environment variables, and CI/CD secrets will be provided through GitHub Secrets.
 
 ### Project Paths
 
-Path handling should be centralized in `src/ui_testing_framework/project.py`.
+Path handling should be centralized in `src/project.py`.
 
 Expected responsibilities:
 
@@ -273,7 +268,7 @@ Planned pytest support:
 - Pytest markers such as `smoke`, `regression`, `ui`, and `slow`.
 - Screenshot, page source, and browser log capture on failure.
 - Allure attachments for failures and important steps.
-- Framework setup test that verifies YAML config loading and config model creation.
+- Capability verification through the Sauce Demo home-page smoke test.
 
 pytest command-line options will be finalized during implementation. Likely options are `--env`, `--browser`, `--headless`, `--base-url`, and timeout override support.
 
@@ -283,9 +278,12 @@ Planned Allure support:
 
 - Add `allure-pytest`.
 - Generate reports from pytest results.
+- Capture a screenshot after every named Allure step and attach it to that step.
+- Persist step screenshots under the configured `screenshots/` directory.
 - Attach screenshots on failure.
 - Attach page source on failure.
 - Attach browser logs where available.
+- Write English START/PASS/FAIL execution logs and attach the execution log to failed Allure results.
 - Use Allure labels such as feature, story, severity, and suite.
 - Wrap important business actions with Allure steps.
 
@@ -307,10 +305,10 @@ Chrome support should be stored and implemented in the following places:
 
 - Dependency declaration: `selenium` in `pyproject.toml`.
 - Browser config values: YAML files under `config/`.
-- Browser config dataclass: `src/ui_testing_framework/models/configuration.py`.
-- WebDriver creation: `src/ui_testing_framework/webdriver/factory.py`.
-- Chrome-specific options: `src/ui_testing_framework/webdriver/chrome_options.py`.
-- Download path and other local paths: `src/ui_testing_framework/project.py`.
+- Browser config dataclass: `src/models/configuration.py`.
+- WebDriver creation: `src/webdriver/factory.py`.
+- Chrome-specific options: `src/webdriver/chrome_options.py`.
+- Download path and other local paths: `src/project.py`.
 
 The initial implementation should rely on Selenium's built-in driver management for Chrome where possible, so no ChromeDriver binary should be committed to the repository. If a manual driver path is ever required, it should come from config or environment variables, not from a hardcoded path.
 
@@ -462,7 +460,7 @@ Generation rules should be strict enough that Codex or another discovery/generat
 - Initialize Poetry configuration.
 - Set Python target to 3.12.
 - Add Selenium, pytest, Allure, Ruff, YAML config, and `python-dotenv` dependencies.
-- Add the `src/ui_testing_framework/` package structure.
+- Add the direct framework source directories under `src/` and the `src/project.py` module.
 - Add base folders for config, data, and tests.
 - Add initial pytest and Ruff configuration.
 - Configure Ruff to enforce return type annotations where practical.
@@ -478,25 +476,20 @@ Generation rules should be strict enough that Codex or another discovery/generat
 - Implement `BasePage`.
 - Implement separate locator modules.
 - Implement wait-backed page assertion helpers.
-- Implement screenshot, page source, browser log, and Allure failure hooks.
+- Implement configurable element visibility timeout and polling.
+- Implement per-step screenshots, execution logging, page source, browser log, and Allure failure hooks.
 
-### Phase 4: Framework Setup Test
+### Phase 4: First Application Smoke Test And Capability Verification
 
-- Add a framework setup test for configuration loading.
-- Assert that required config elements are loaded into dataclass models.
-- Assert that project paths resolve correctly from the repository root.
-- Run pytest locally before real page tests are added.
+- Add the Sauce Demo home-page object and separate logo locator.
+- Navigate to `https://sauce-demo.myshopify.com/` through `UIClient`.
+- Verify the page is loaded when `img[alt='Sauce Demo']` is visible within 5 seconds, polling every second.
+- Capture screenshots after the navigation and loaded-state verification steps.
+- Log each step in English with START, PASS, or FAIL status.
+- Verify screenshot capability through the running browser test rather than unit or framework tests.
+- Add broader application page objects, locators, flows, and test cases incrementally.
 
-### Phase 5: First UI Test After Framework Is Ready
-
-- Add a simple example page object.
-- Add a simple locator module.
-- Add a simple flow.
-- Add a smoke test.
-- Run pytest locally in headed mode.
-- Generate Allure results.
-
-### Phase 6: CI/CD
+### Phase 5: CI/CD
 
 - Add GitHub Actions workflow.
 - Run tests headlessly in CI.
@@ -504,7 +497,7 @@ Generation rules should be strict enough that Codex or another discovery/generat
 - Upload Allure results as artifacts.
 - Add pre-commit configuration for Ruff after the first code structure is in place.
 
-### Phase 7: AI Generation Readiness
+### Phase 6: AI Generation Readiness
 
 - Add templates or examples for pages, locators, tests, assertions, and flows.
 - Add review checklist for generated tests.
@@ -519,7 +512,7 @@ Generation rules should be strict enough that Codex or another discovery/generat
 5. Selector strategy details.
 6. Parallel execution strategy with `pytest-xdist`.
 7. Flaky test handling strategy.
-8. First real application/page to test after generic framework setup.
+8. Broader application coverage after the initial Sauce Demo home-page smoke test.
 9. Whether to add `.python-version` for local Python version pinning.
 10. Whether shell scripts will be added and need ShellCheck/shfmt pre-commit hooks.
 11. Which subfolders should receive dedicated `AGENTS.md` files first.

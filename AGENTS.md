@@ -8,7 +8,7 @@ Codex should treat this project as a test automation framework.
 
 ## Core Rules
 
-- Use Python and follow the planned `src/ui_testing_framework/` package structure.
+- Use Python and follow the planned `src/` source layout.
 - Target Python 3.12 unless the project plan changes.
 - Use Poetry for dependency management.
 - Use pytest for test execution and fixtures.
@@ -17,14 +17,17 @@ Codex should treat this project as a test automation framework.
 - Use Allure for reporting and evidence attachments.
 - Use Ruff for formatting and linting.
 - Keep tests in `tests/`.
-- Keep framework source in `src/ui_testing_framework/`.
-- Keep page objects in `src/ui_testing_framework/pages/`.
-- Keep locators in `src/ui_testing_framework/locators/`.
-- Keep business behavior helpers in `src/ui_testing_framework/flows/`.
-- Keep clients in `src/ui_testing_framework/clients/`.
-- Keep config loading code in `src/ui_testing_framework/config/`.
-- Keep config models and timeout constants in `src/ui_testing_framework/models/`.
-- Keep project-root-relative path definitions in `src/ui_testing_framework/project.py`.
+- Keep framework source directly under `src/`.
+- Keep framework assertions in `src/assertions/`.
+- Keep clients in `src/clients/`.
+- Keep config loading code in `src/config/`.
+- Keep business behavior helpers in `src/flows/`.
+- Keep locators in `src/locators/`.
+- Keep framework logging in `src/logging/`.
+- Keep config models and timeout constants in `src/models/`.
+- Keep page objects in `src/pages/`.
+- Keep WebDriver infrastructure in `src/webdriver/`.
+- Keep project-root-relative path definitions in `src/project.py`.
 - Keep configuration files in `config/`.
 - Keep upload, download, and fixture files in `data/`.
 
@@ -101,9 +104,12 @@ Codex should treat this project as a test automation framework.
 - Use pytest markers for meaningful grouping.
 - Register pytest markers in `pytest.ini`.
 - Keep `smoke` and `regression` markers available from the beginning.
-- Add framework setup tests before real page tests to validate config and project paths.
+- Validate framework capabilities through browser tests against the configured test URL.
+- Start with the Sauce Demo home-page smoke test; add broader application test cases incrementally.
 - Add Allure labels and steps for important user flows.
 - Capture screenshots, page source, and useful browser evidence on failure.
+- Capture a screenshot after every named Allure UI step and persist it under the configured screenshot path.
+- Log every UI step in English with START, PASS, and FAIL states; attach execution logs to failed Allure results.
 - Local tests should run headed by default.
 - CI tests should run headless by default.
 

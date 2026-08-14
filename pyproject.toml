@@ -1,0 +1,57 @@
+[project]
+name = "selenium-ui-testing-framework"
+version = "0.1.0"
+description = "A scalable Selenium UI testing framework."
+readme = "README.md"
+requires-python = ">=3.12,<4.0"
+dependencies = [
+    "selenium>=4.47.0,<5.0.0",
+    "pytest>=9.1.1,<10.0.0",
+    "allure-pytest>=2.16.0,<3.0.0",
+    "PyYAML>=6.0.3,<7.0.0",
+    "python-dotenv>=1.2.2,<2.0.0",
+]
+
+[tool.poetry]
+packages = [
+    { include = "assertions", from = "src" },
+    { include = "clients", from = "src" },
+    { include = "config", from = "src" },
+    { include = "flows", from = "src" },
+    { include = "locators", from = "src" },
+    { include = "logging", from = "src" },
+    { include = "models", from = "src" },
+    { include = "pages", from = "src" },
+    { include = "webdriver", from = "src" },
+    { include = "project.py", from = "src" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+selenium = "^4.47.0"
+pytest = "^9.1.1"
+allure-pytest = "^2.16.0"
+pyyaml = "^6.0.3"
+python-dotenv = "^1.2.2"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.16.3"
+pre-commit = "^4.6.2"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+extend-exclude = [".venv", "allure-results", "allure-report"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "C4", "ARG", "PT", "RUF", "ANN"]
+ignore = ["ANN401"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+[build-system]
+requires = ["poetry-core>=2.0.0"]
+build-backend = "poetry.core.masonry.api"

@@ -30,7 +30,7 @@ Create or select a Poetry environment:
 poetry env use 3.12
 ```
 
-Install dependencies after `pyproject.toml` is created:
+Install the locked dependencies:
 
 ```bash
 poetry install
@@ -38,7 +38,11 @@ poetry install
 
 Local secrets should be provided through environment variables. Start from `.env.example` and ask the team for the real values. CI/CD secrets will be provided through GitHub Secrets.
 
-Configuration files will use YAML and live under `config/`. Paths should be project-root-relative and resolved by the framework.
+The single test environment is configured in `config/default.yaml`. Paths are project-root-relative and resolved by the framework.
+
+The source root is `src/`, with framework responsibilities kept in direct child directories: `assertions/`, `clients/`, `config/`, `flows/`, `locators/`, `logging/`, `models/`, `pages/`, and `webdriver/`; project-root-relative paths are defined in `src/project.py`. Framework capabilities are verified through browser tests against the configured test URL, starting with the Sauce Demo home-page smoke test. Broader application coverage will be added incrementally.
+
+The first page-load check waits up to 5 seconds for the Sauce Demo logo and polls once per second. Each named UI step logs its START/PASS/FAIL status in English. A screenshot is attached to every Allure step and also saved under `screenshots/`; failed browser tests additionally attach the execution log, page source, browser logs, and a failure screenshot.
 
 Chrome is the first planned browser. Selenium Chrome setup will be implemented in the framework WebDriver factory and Chrome options modules, with browser behavior configured through YAML.
 
@@ -48,12 +52,6 @@ Run all tests:
 
 ```bash
 poetry run pytest
-```
-
-Run smoke tests:
-
-```bash
-poetry run pytest tests/smoke
 ```
 
 Run by marker:
@@ -69,13 +67,45 @@ Run tests with Allure result output:
 poetry run pytest --alluredir=allure-results
 ```
 
-Serve the Allure report locally:
+For a clean Allure results directory on each run:
 
 ```bash
-allure serve allure-results
+poetry run pytest --clean-alluredir --alluredir=allure-results
 ```
 
-Local runs are planned to be headed by default. GitHub Actions runs are planned to be headless by default.
+Run the smoke test and refresh Allure results:
+
+```bash
+poetry run pytest tests/smoke --clean-alluredir --alluredir=allure-results
+```
+
+Open the Allure report locally:
+
+```powershell
+allure.cmd open allure-results
+```
+
+If PowerShell blocks scripts, run Allure through `cmd`:
+
+```powershell
+cmd /c "allure open allure-results"
+```
+
+Generate a static Allure report directory:
+
+```powershell
+cmd /c "allure generate allure-results -o allure-report"
+```
+
+Local runs are headed by default. GitHub Actions runs use headless mode by default.
+
+Use `--headless` to run browser tests without a visible Chrome window:
+
+```bash
+poetry run pytest --headless
+```
+
+Generated downloads are cleaned at the start of each test session. Committed upload files and static fixtures remain under `data/uploads/` and `data/fixtures/`.
 
 ## Quality Commands
 
@@ -91,7 +121,7 @@ Format with Ruff:
 poetry run ruff format .
 ```
 
-Run pre-commit checks after pre-commit is configured:
+Run pre-commit checks:
 
 ```bash
 poetry run pre-commit run --all-files
