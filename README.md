@@ -15,6 +15,8 @@ Repository for a Selenium-based UI testing framework supported by Codex.
 - YAML configuration
 - GitHub Actions
 
+Current scope: this repository runs Selenium UI tests only. If API, visual, performance, or other test types are added later, document their commands in separate sections so the Selenium runbook stays clear.
+
 ## Setup
 
 Check Python before creating the Poetry environment:
@@ -50,7 +52,7 @@ At the start of every pytest session, the framework removes generated files from
 
 Chrome is the first planned browser. Selenium Chrome setup will be implemented in the framework WebDriver factory and Chrome options modules, with browser behavior configured through YAML.
 
-## Test Commands
+## Current Run Commands
 
 Run all tests:
 
@@ -58,11 +60,58 @@ Run all tests:
 poetry run pytest
 ```
 
-Run by marker:
+Run the current smoke suite:
+
+```bash
+poetry run pytest tests/smoke
+```
+
+Run the current Sauce Demo smoke test directly:
+
+```bash
+poetry run pytest tests/smoke/test_sauce_demo_home_page.py
+```
+
+Run browser tests in headless mode:
+
+```bash
+poetry run pytest --headless
+```
+
+Run the smoke marker:
 
 ```bash
 poetry run pytest -m smoke
-poetry run pytest -m regression
+```
+
+Run the UI marker:
+
+```bash
+poetry run pytest -m ui
+```
+
+Run all tests except tests marked as slow:
+
+```bash
+poetry run pytest -m "not slow"
+```
+
+Run tests matching a name expression:
+
+```bash
+poetry run pytest -k sauce_demo
+```
+
+Collect tests without running them:
+
+```bash
+poetry run pytest --collect-only
+```
+
+Run tests with verbose output:
+
+```bash
+poetry run pytest -v
 ```
 
 Run tests with Allure result output:
@@ -82,6 +131,16 @@ Run the smoke test and refresh Allure results:
 ```bash
 poetry run pytest tests/smoke --clean-alluredir --alluredir=allure-results
 ```
+
+Run the smoke test headlessly and refresh Allure results:
+
+```bash
+poetry run pytest tests/smoke --headless --clean-alluredir --alluredir=allure-results
+```
+
+The `regression` and `slow` markers are registered in `pytest.ini` for future expansion. They should be used once matching tests exist.
+
+## Allure Commands
 
 Serve a fresh Allure report from the current result files:
 
@@ -107,13 +166,27 @@ cmd /c "allure open allure-report"
 
 Local runs are headed by default. GitHub Actions runs use headless mode by default.
 
-Use `--headless` to run browser tests without a visible Chrome window:
+Generated downloads are cleaned at the start of each test session. Committed upload files and static fixtures remain under `data/uploads/` and `data/fixtures/`.
+
+## Poetry Commands
+
+Show installed project dependencies:
 
 ```bash
-poetry run pytest --headless
+poetry show
 ```
 
-Generated downloads are cleaned at the start of each test session. Committed upload files and static fixtures remain under `data/uploads/` and `data/fixtures/`.
+Show the dependency tree:
+
+```bash
+poetry show --tree
+```
+
+Check the Poetry project configuration:
+
+```bash
+poetry check
+```
 
 ## Quality Commands
 
@@ -123,10 +196,22 @@ Run Ruff checks:
 poetry run ruff check .
 ```
 
+Run Ruff checks on selected files:
+
+```bash
+poetry run ruff check src tests
+```
+
 Format with Ruff:
 
 ```bash
 poetry run ruff format .
+```
+
+Check formatting without changing files:
+
+```bash
+poetry run ruff format --check .
 ```
 
 Run pre-commit checks:
@@ -135,8 +220,41 @@ Run pre-commit checks:
 poetry run pre-commit run --all-files
 ```
 
+Run the Ruff pre-commit hooks only:
+
+```bash
+poetry run pre-commit run ruff-check --all-files
+poetry run pre-commit run ruff-format --all-files
+```
+
+## AI Council Reference
+
+The planned AI Council workflow is documented in [ai-council-plan.md](plans/ai-council-plan.md). It defines the planned subagents, question gate, user challenge loop, approval gate, and implementation-worker flow.
+
+Example planning prompt:
+
+```text
+Use AI Council to review this idea. Do not implement. Ask me blocking and decision questions before producing the final plan.
+Task: <task>
+```
+
+Example implementation prompt:
+
+```text
+Use AI Council for this implementation. First run council review, collect questions and disagreements, ask me for answers, then ask for final approval. Only after approval, use implementation_worker for the approved code changes.
+Task: <task>
+```
+
+Example challenge prompt:
+
+```text
+Council challenge: <decision or assumption> is wrong because <context>. Re-run the relevant council agents and update the plan.
+```
+
 ## Project Plan
 
 See [framework-plan.md](plans/framework-plan.md) for the implementation plan and open decisions.
+
+See [ai-council-plan.md](plans/ai-council-plan.md) for the planned AI Council workflow.
 
 See [AGENTS.md](AGENTS.md) for Codex development rules.
