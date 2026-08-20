@@ -56,34 +56,34 @@ Before starting modifications:
 1. Check the current branch and working-tree status.
 2. If uncommitted or untracked user changes are present, stop and report them.
    Do not stash, discard, overwrite, or relocate them.
-3. Switch to `main`.
-4. Update `main` using a fast-forward-only pull:
+3. If the current branch is `main`, propose a new development branch and wait
+   for the user to approve its name.
+4. Create the approved branch directly from the current `main`:
+
+   ```text
+   git switch -c feature/<short-description>
+   ```
+
+5. If the current branch is not `main`, continue on it only when the user
+   explicitly approves using that branch for the task.
+6. On the approved development branch, update from `origin/main` using a
+   fast-forward-only pull:
 
    ```text
    git pull --ff-only origin main
    ```
 
-5. Create a dedicated branch from the updated `main`.
-
-Use this branch naming pattern:
+New development branches must use this naming pattern:
 
 ```text
-dev/<ticket-id>-<short-description>
-```
-
-When no ticket ID exists, use:
-
-```text
-dev/<short-description>
+feature/<short-description>
 ```
 
 Do not edit, stage, or commit task changes on `main`.
 
-A pre-existing branch may be reused only when the user explicitly states that
-the new work belongs to that branch.
-
-If `main` cannot be updated with a fast-forward-only pull, stop and report the
-state. Do not merge, rebase, reset, or force the update automatically.
+If the development branch cannot be updated from `origin/main` with a
+fast-forward-only pull, stop and report the state. Do not merge, rebase, reset,
+or force the update automatically.
 
 ## Conflict Handling
 

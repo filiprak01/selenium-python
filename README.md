@@ -214,7 +214,26 @@ Check formatting without changing files:
 poetry run ruff format --check .
 ```
 
-Run pre-commit checks:
+Install the Git pre-commit hook:
+
+```bash
+poetry run pre-commit install
+```
+
+After installation, every `git commit` runs the configured checks before the
+commit is created.
+
+Run pre-commit checks against staged files:
+
+```bash
+poetry run pre-commit run
+```
+
+The hook runs Ruff checks and formatting against changed Python files, then
+collects the pytest suite to verify test discovery, imports, syntax during
+collection, and pytest configuration without executing tests.
+
+Run pre-commit checks against all files:
 
 ```bash
 poetry run pre-commit run --all-files
