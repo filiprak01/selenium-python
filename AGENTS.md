@@ -276,6 +276,19 @@ Use this structure:
 pytest <affected-tests>
 ```
 
+## UI test-case design
+
+- Use `$ui-testcase-designer` for repository-aware UI test-case design.
+- Store accepted UI test cases under `docs/testcase/<feature-slug>/`.
+- Inspect existing manual cases and existing UI automation before proposing new coverage.
+- Explore only a safe local, development, test, or staging UI with configured browser tools.
+- Present exactly one test case at a time.
+- Save or update a test case only after explicit `ACCEPT`.
+- Treat requested edits as `DISCUSS`; show the revised case before saving it.
+- Do not generate or modify Selenium automation during test-case design.
+- Do not create temporary shell, Python, JavaScript, or Selenium scripts for UI exploration.
+
+
 ## Risks and Notes
 
 - <Known risk, assumption, limitation, or "None identified">

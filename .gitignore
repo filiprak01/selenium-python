@@ -233,3 +233,4 @@ data/downloads/*
 *.trace
 
 .idea
+.idea/*
