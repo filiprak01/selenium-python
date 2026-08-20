@@ -168,6 +168,30 @@ Local runs are headed by default. GitHub Actions runs use headless mode by defau
 
 Generated downloads are cleaned at the start of each test session. Committed upload files and static fixtures remain under `data/uploads/` and `data/fixtures/`.
 
+## GitHub Actions
+
+The Selenium workflow runs only in these cases:
+
+- when a pull request targeting `main` is opened;
+- every day at 04:00 UTC, using the `smoke` marker;
+- when started manually with the `smoke`, `regression`, `e2e`, or `all` selection.
+
+Pull-request runs execute changed test modules. Changes to shared framework or test
+configuration run the smoke suite as a fallback. Documentation-only pull requests do
+not start Selenium.
+
+Every executed CI test run uses headless Chrome and creates a downloadable
+`selenium-allure-<event>-<run-number>` artifact. The artifact contains the generated
+`allure-report/`, raw `allure-results/`, and available screenshots and logs. Download and
+extract the artifact, then open the generated report with:
+
+```powershell
+cmd /c "allure open allure-report"
+```
+
+The pull-request workflow runs only on the initial opened event. Later commits, pushes,
+synchronization events, and reopened pull requests do not trigger another run.
+
 ## Poetry Commands
 
 Show installed project dependencies:
