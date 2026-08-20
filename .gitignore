@@ -232,5 +232,4 @@ data/downloads/*
 *.har
 *.trace
 
-.idea
-.idea/*
+.idea/
