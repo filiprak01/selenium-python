@@ -1,174 +1,308 @@
-# Codex Development Rules
+# AGENTS.md
 
-## Project Purpose
+## Scope
 
-This repository contains a Python Selenium UI testing framework using pytest, Allure, Poetry, GitHub Actions, YAML configuration, and the Page Object Model.
+These instructions apply to the entire repository unless a more specific
+`AGENTS.md` provides stricter directory-specific rules.
 
-Codex should treat this project as a test automation framework.
+The following restrictions are non-negotiable:
 
-## Core Rules
+- Do not modify code on `main`.
+- Do not commit without explicit user approval.
+- Do not push under any circumstances.
+- Do not execute shell scripts, Python scripts, or test suites.
+- Do not modify code before the implementation plan is explicitly approved.
 
-- Use Python and follow the planned `src/` source layout.
-- Target Python 3.12 unless the project plan changes.
-- Use Poetry for dependency management.
-- Use pytest for test execution and fixtures.
-- Use Selenium for browser automation.
-- Use Chrome as the first supported browser until the project plan changes.
-- Use Allure for reporting and evidence attachments.
-- Use Ruff for formatting and linting.
-- Keep tests in `tests/`.
-- Keep framework source directly under `src/`.
-- Keep framework assertions in `src/assertions/`.
-- Keep clients in `src/clients/`.
-- Keep config loading code in `src/config/`.
-- Keep business behavior helpers in `src/flows/`.
-- Keep locators in `src/locators/`.
-- Keep framework logging in `src/logging/`.
-- Keep config models and timeout constants in `src/models/`.
-- Keep page objects in `src/pages/`.
-- Keep WebDriver infrastructure in `src/webdriver/`.
-- Keep project-root-relative path definitions in `src/project.py`.
-- Keep configuration files in `config/`.
-- Keep upload, download, and fixture files in `data/`.
+## Communication
 
-## Git Rules
+- Keep responses concise.
+- Include only information relevant to the current task.
+- Use simple, direct statements.
+- Do not repeat the request or add unnecessary background.
+- Clearly distinguish completed work, validation results, unverified work,
+  assumptions, and blockers.
+- Report a blocker as soon as it is discovered.
 
-- Do not work directly on `main`.
-- Before implementation work, create or switch to a feature branch named `feature/<descriptive-name>`.
-- Do not push changes after code implementation unless the user explicitly asks for a push.
-- Keep unrelated user changes intact and do not revert them.
+## Mandatory Planning and Approval
 
-## Planning Rules
+Before modifying code, tests, configuration, or documentation:
 
-- Before implementing code changes, create or update a short plan and ask the user to approve it.
-- The plan should explain what will change, where it will change, and why.
-- The plan should include scalability concerns detected during review and a proposed implementation path for the user to consider.
-- Do not implement until the user approves the plan.
-- Documentation-only planning changes can be made when the user explicitly asks to update planning documents.
+1. Inspect the relevant repository files using read-only operations.
+2. Produce a concise implementation plan containing:
+   - the objective;
+   - the expected files or components to change;
+   - the proposed implementation approach;
+   - the validation approach;
+   - known assumptions, risks, and open decisions.
+3. Ask the user for explicit approval.
+4. Do not begin modifications until approval is provided.
 
-## Delivery Rules
+Silence, an unrelated response, or a general acknowledgment is not approval.
 
-- After implementation, summarize changed files and what changed in each file.
-- Provide a diff-view-oriented summary so the user can review the changes clearly.
-- Mention verification commands that were run and whether they passed.
+The user may reject the plan or request changes. Revise the plan and request
+approval again when required.
 
-## Dependency Rules
+If the approved approach changes materially during implementation, stop,
+explain the reason, present the revised plan, and request approval again.
 
-- Before implementation work that touches dependencies or framework integration, check for current package versions and relevant updates.
-- Prefer official package documentation, release notes, or Poetry package metadata when checking dependency updates.
-- Include notable package/version findings in the implementation plan before making dependency changes.
+## Git Branch Workflow
 
-## Scalability Rules
+Read-only inspection may be performed before branch preparation. Repository
+modifications may begin only after the plan is approved and a dedicated
+development branch is active.
 
-- Prefer scalable framework structure over the simplest short-term implementation.
-- Keep extension points clear for future browsers, environments, clients, flows, and generated tests.
-- When a scalability issue is detected, document the concern and propose an implementation plan for user consideration.
-- Avoid abstractions that do not serve an expected framework extension point.
+Before starting modifications:
 
-## Typing Rules
+1. Check the current branch and working-tree status.
+2. If uncommitted or untracked user changes are present, stop and report them.
+   Do not stash, discard, overwrite, or relocate them.
+3. Switch to `main`.
+4. Update `main` using a fast-forward-only pull:
 
-- Always add explicit return types to functions and methods.
-- Use `-> None` for functions and methods that do not return a value.
-- Keep type annotations readable and useful for framework users and future generated code.
+   ```text
+   git pull --ff-only origin main
+   ```
 
-## Page Object Model Rules
+5. Create a dedicated branch from the updated `main`.
 
-- Tests should avoid direct Selenium calls.
-- Page objects should expose user-level actions and page-specific behavior.
-- Page objects should use locators from the separate locator package.
-- Page objects should use explicit waits where needed.
-- Page objects may expose indirect assertion helpers backed by assertion functions.
-- Prefer stable selectors such as `data-testid` when available.
-- Keep reusable components separate from full-page objects when the same component appears on multiple pages.
+Use this branch naming pattern:
 
-## Flow Rules
+```text
+dev/<ticket-id>-<short-description>
+```
 
-- Use `flows/` for reusable business behavior and UI manipulation.
-- Flows may coordinate multiple pages.
-- Flows should keep tests readable and behavior-oriented.
-- Do not hide page-specific behavior in flows when it belongs in a page object.
+When no ticket ID exists, use:
 
-## Client Rules
+```text
+dev/<short-description>
+```
 
-- `UIClient` is the high-level entry point for UI tests.
-- `UIClient` should own or receive WebDriver/session details.
-- `UIClient` should expose access to page objects and flows.
-- Keep test files away from WebDriver construction details.
-- Prepare for a future client pool when multiple clients, users, browsers, or sessions are needed.
+Do not edit, stage, or commit task changes on `main`.
 
-## Test Rules
+A pre-existing branch may be reused only when the user explicitly states that
+the new work belongs to that branch.
 
-- Test names should describe behavior.
-- Tests should be small enough to diagnose failures quickly.
-- Use pytest fixtures for browser, config, clients, and reusable setup.
-- Use pytest markers for meaningful grouping.
-- Register pytest markers in `pytest.ini`.
-- Keep `smoke` and `regression` markers available from the beginning.
-- Validate framework capabilities through browser tests against the configured test URL.
-- Start with the Sauce Demo home-page smoke test; add broader application test cases incrementally.
-- Add Allure labels and steps for important user flows.
-- Capture screenshots, page source, and useful browser evidence on failure.
-- Capture screenshots through explicit screenshot steps by default.
-- Keep automatic screenshots after every named Allure UI step configurable and disabled by default for local, CI, and pipeline runs.
-- Clean generated Allure, screenshot, log, and download artifact directories before each pytest session starts.
-- Log every UI step in English with START, PASS, and FAIL states; attach execution logs to failed Allure results.
-- Local tests should run headed by default.
-- CI tests should run headless by default.
+If `main` cannot be updated with a fast-forward-only pull, stop and report the
+state. Do not merge, rebase, reset, or force the update automatically.
 
-## Configuration Rules
+## Conflict Handling
 
-- Do not hardcode application URLs, credentials, browser choices, paths, or timeouts in tests.
-- Store URLs and non-secret configuration in YAML files under `config/`.
-- Load configuration into dataclass models.
-- Use `python-dotenv` for local `.env` loading.
-- Store timeout constants in source models/constants.
-- Use `pathlib.Path` and project-root-relative paths from `project.py`.
-- Include OS-aware path behavior through configuration where needed.
-- Keep secrets out of Git.
-- Load local secrets from environment variables.
-- Load CI/CD secrets from GitHub Secrets.
+Never resolve a Git conflict automatically.
 
-## Ruff Rules
+For every conflicting file, report:
 
-- Keep Ruff enabled for formatting and linting.
-- Run Ruff after any Python code change.
-- Run Ruff for the Python files changed in the implementation.
-- Fix Ruff issues detected in changed files before reporting completion.
-- Configure Ruff to enforce missing return type annotations through the `ANN` rule family where practical.
-- Use pre-commit to run Ruff before commits once pre-commit is configured.
-- Run Ruff on Python files such as `.py` and `.pyi`.
-- Include `.ipynb` only if notebooks become part of the framework.
-- Do not use Ruff for shell scripts. If `.sh` scripts are added, use ShellCheck or shfmt through pre-commit.
-- Keep pytest `assert` statements allowed.
-- Prefer readable UI automation code over compact clever code.
-- Avoid hard sleeps; prefer explicit waits.
-- Avoid broad utility dumping. Add clear modules for new framework behavior.
+- the file path;
+- the current branch behavior or content;
+- the incoming behavior or content;
+- the important differences;
+- the likely impact of each option;
+- a recommendation, when one can be made safely;
+- the exact decision required from the user.
 
-## Generated Code Rules
+Do not select a version, remove conflict markers, or continue the conflicted
+operation until the user decides what to keep.
 
-- Generated code should match the repository structure and naming conventions.
-- Generated tests should use `UIClient`, page objects, flows, and assertion helpers.
-- Generated tests should not use raw Selenium directly unless framework code is being created.
-- Generated locators should be reviewed for selector stability.
-- Generated files should include only useful comments.
-- Generated code should be runnable with Poetry, pytest, Ruff, and Allure.
+Apply the same rule when requirements, existing implementation, tests, or
+documentation contradict one another.
 
-## CI/CD Rules
+## Command and Script Restrictions
 
-- Use GitHub Actions for CI/CD.
-- Run CI browser tests in headless mode.
-- Use GitHub Secrets for sensitive values.
-- Upload Allure result artifacts where practical.
-- Do not add Selenium Grid or remote WebDriver support in the initial implementation.
+Direct commands may be used only for:
 
-## Review Checklist
+- repository and file inspection;
+- file search;
+- the Git workflow defined in this file;
+- direct Ruff validation as defined below.
 
-- Does the test describe behavior instead of implementation details?
-- Are locators stable and easy to maintain?
-- Is Selenium usage hidden inside page objects, clients, flows, or framework utilities?
-- Are configuration values loaded from config instead of hardcoded?
-- Are paths resolved from project-root-relative helpers?
-- Are secrets loaded from environment variables or GitHub Secrets?
-- Is failure evidence available in Allure?
-- Can the test be run through Poetry and pytest?
-- Does Ruff pass?
+Do not execute:
+
+- `.sh`, `.bash`, `.zsh`, or other shell script files;
+- `.py` files;
+- `sh`, `bash`, `zsh`, PowerShell, or similar interpreters to run scripts;
+- `python`, `python3`, `py`, or `python -m`;
+- `poetry run`, `uv run`, `pipenv run`, `tox`, `nox`, or similar wrappers that
+  execute project code;
+- `pytest` or any other test runner;
+- `make`, task runners, or project commands that execute scripts;
+- command wrappers intended to bypass these restrictions.
+
+When a prohibited command is required:
+
+1. Provide the exact command to the user.
+2. Ask the user to run it.
+3. Ask for the complete output or logs.
+4. Analyze only the results actually provided.
+
+Do not claim that an unexecuted command succeeded.
+
+## Implementation Rules
+
+- Make the smallest coherent change that satisfies the approved plan.
+- Inspect existing implementations and patterns before creating new ones.
+- Prefer extending an existing abstraction over creating a duplicate.
+- Do not perform unrelated refactoring.
+- Do not change public behavior outside the approved scope.
+- Do not add or update dependencies without explicit user approval.
+- Do not modify generated files unless the task explicitly requires it.
+- Do not disable, delete, skip, or weaken tests to hide a failure.
+- Do not add blanket lint suppressions merely to silence findings.
+- Do not expose, print, store, or commit credentials or secrets.
+- Preserve user-authored changes that are unrelated to the task.
+
+Do not run destructive Git operations, including:
+
+- `git reset --hard`;
+- `git clean`;
+- forced checkout or restore of user changes;
+- automatic stash operations;
+- force push;
+- history rewriting.
+
+## Ruff Validation
+
+After code changes are complete:
+
+1. Identify every changed Python file.
+2. Run Ruff directly against explicit changed-file paths:
+
+   ```text
+   ruff check <changed-python-files>
+   ```
+
+3. Fix every reported issue in the changed files.
+4. Repeat the check until Ruff exits successfully.
+5. Report the final Ruff command and result.
+
+Do not use a broad automatic-fix command without user approval.
+
+If no Python files changed, report that Ruff validation was not applicable.
+
+If Ruff is unavailable or cannot run in the current environment, provide the
+exact command to the user and ask for the complete output.
+
+If resolving a Ruff issue would require a material change outside the approved
+plan, stop and request approval for a revised plan.
+
+## Test Validation
+
+Do not run `pytest` or any other test suite.
+
+After implementation:
+
+1. Identify the tests affected by the changes.
+2. Provide the narrowest reliable `pytest` command covering those tests.
+3. Ask the user to run the command and provide the complete result.
+4. Analyze failures using the supplied output.
+5. Fix failures that are within the approved scope.
+6. Request approval for a revised plan if a fix requires a material scope
+   change.
+
+Never report tests as passing unless the user has provided output confirming
+that result.
+
+## Commit Rules
+
+Before any attempt to stage or commit changes, ask the user for explicit
+permission. Codex may stage and create the specific proposed commit only after
+the user grants that permission.
+
+Before requesting commit approval, provide:
+
+- a concise summary of the completed changes;
+- the list of files intended for the commit;
+- the Ruff validation result;
+- the test command and known test result;
+- any remaining risks or unverified behavior;
+- the proposed commit message.
+
+Do not stage or commit before approval.
+
+One approval applies to one specific commit containing the described diff and
+using the proposed message. Ask again when the diff or commit purpose changes
+after approval.
+
+After approval:
+
+- stage only files belonging to the approved task;
+- use a concise imperative commit subject;
+- include a body when needed to explain what changed and why;
+- do not amend, squash, or rewrite the commit without separate approval.
+
+## Push Rules
+
+Codex must never execute `git push` or otherwise push changes to a remote.
+
+This prohibition is absolute and applies even when the user asks for or
+explicitly approves a push. Only the user may perform the push.
+
+After an approved commit, provide the exact command for the user to run:
+
+```text
+git push -u origin <branch-name>
+```
+
+The user is solely responsible for pushing.
+
+## Pull Request Summary
+
+When the user states that they are opening a pull request:
+
+1. Review the complete branch diff against `main`.
+2. Summarize all work performed on the branch.
+3. Produce a Markdown-friendly pull request description.
+4. Include the exact `pytest` command covering the changed or affected tests.
+5. Mark a check as completed only when supported by an actual result.
+
+Use this structure:
+
+```markdown
+## Summary
+
+<What the pull request changes and why.>
+
+## Changes
+
+- <Change 1>
+- <Change 2>
+
+## Validation
+
+- Ruff: <command and result>
+- Tests: <result, or "Not run by the agent">
+
+## Test Command
+
+```text
+pytest <affected-tests>
+```
+
+## Risks and Notes
+
+- <Known risk, assumption, limitation, or "None identified">
+
+## Checklist
+
+- [ ] The implementation matches the approved plan.
+- [ ] Ruff passes for all changed Python files.
+- [ ] The affected tests pass.
+- [ ] The diff contains no unrelated changes.
+- [ ] No secrets or generated artifacts were added accidentally.
+- [ ] The branch is ready for user review.
+```
+
+Do not invent validation results or claim that checks passed without evidence.
+
+## Completion Report
+
+At the end of implementation, report only:
+
+- what changed;
+- which files changed;
+- the Ruff command and result;
+- the test command the user must run;
+- test results provided by the user, if any;
+- remaining risks, assumptions, or blockers;
+- commit status;
+- confirmation that no push was performed.
+
+A task is not fully verified until the required user-run tests have passed.
