@@ -6,9 +6,9 @@
 
 ## Accepted coverage
 
-| ID | Test case | Type | Scope | Case kind | Priority | File |
-|---|---|---|---|---|---|---|
-| <TC-###> | <Test case name> | <Smoke or Regression> | <Feature or E2E> | <Case kind> | <Priority> | [Open](./<filename>.md) |
+| ID | Test case | Type | Scope | Case kind | Priority | Additional marks | Automation | Automation marks | Automated test | File |
+|---|---|---|---|---|---|---|---|---|---|---|
+| <TC-###> | <Test case name> | <Smoke or Regression> | <Feature or E2E> | <Case kind> | <Priority> | <marks or None> | <automation status> | <resolved marks or N/A> | <Node ID or N/A> | [Open](./<filename>.md) |
 
 ## Coverage notes
 

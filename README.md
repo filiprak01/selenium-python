@@ -301,3 +301,34 @@ See [framework-plan.md](plans/framework-plan.md) for the implementation plan and
 See [ai-council-plan.md](plans/ai-council-plan.md) for the planned AI Council workflow.
 
 See [AGENTS.md](AGENTS.md) for Codex development rules.
+
+# UI Test Design and Selenium Implementation Skills
+
+This package provides two repository-scoped Codex skills aligned with the current Selenium Python framework.
+
+```text
+$ui-testcase-designer
+```
+
+Creates reviewed UI testcase Markdown files one at a time and records optional testcase-specific pytest marks.
+
+```text
+$selenium-test-implementer
+```
+
+Consumes one accepted testcase path, validates it against the safe running UI, resolves discrepancies with the user, discovers stable locators and existing automation, calculates cumulative pytest marks, implements approved Selenium pytest code using the current `src/` layers, and waits for user-run verification.
+
+Repository alignment:
+
+```text
+new tests       -> tests/ui/<feature_package>/
+business flows  -> src/flows/
+assertions      -> src/assertions/
+pages           -> src/pages/
+locators        -> src/locators/
+clients/config  -> existing src/clients, src/webdriver, src/config, src/models, config/default.yaml
+```
+
+Every generated UI test receives all `required_for_all` marks from the skill's marker-policy YAML; the current defaults are `ui` and `regression`. Smoke adds `smoke`, E2E adds `e2e`, and any number of registered additions are merged cumulatively and recorded in `automation_marks`.
+
+Read `INSTALL.md`, `FRAMEWORK-UPDATES.md`, and `UPGRADE-v2-to-v3.md` before merging.

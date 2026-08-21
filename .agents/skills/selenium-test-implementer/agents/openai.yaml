@@ -1,0 +1,7 @@
+interface:
+  display_name: "Selenium Test Implementer"
+  short_description: "Implement one reviewed UI testcase"
+  default_prompt: "Validate one accepted testcase against the live UI, discover existing Selenium coverage and stable locators, propose an implementation plan, and implement it only after approval."
+
+policy:
+  allow_implicit_invocation: false

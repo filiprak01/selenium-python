@@ -8,6 +8,8 @@
 
 **Priority:** <Critical | High | Medium | Low>
 
+**Additional pytest marks:** <None, or explicit testcase-specific marks requested by the user/repository>
+
 **Covers:** <Concise description of the behavior, outcome, and risk validated by this case.>
 
 **Coverage relationship:** <NEW | OVERLAPPING with `path` | OUTDATED case at `path`>
