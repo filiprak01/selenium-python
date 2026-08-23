@@ -1,7 +1,7 @@
 interface:
   display_name: "UI Test Case Designer"
   short_description: "Review UI test cases one at a time"
-  default_prompt: "Analyze a UI feature, inspect existing coverage, explore the safe running UI when available, and propose one test case for ACCEPT, REJECT, or DISCUSS."
+  default_prompt: "Analyze a UI feature, inspect existing coverage, reuse the repository browser configuration, explore the safe running UI, and propose one test case for ACCEPT, REJECT, or DISCUSS."
 
 policy:
   allow_implicit_invocation: false

@@ -276,6 +276,42 @@ Use this structure:
 pytest <affected-tests>
 ```
 
+## UI test-case design
+
+- Use `$ui-testcase-designer` for repository-aware UI test-case design.
+- Store accepted UI test cases under `docs/testcase/<feature-slug>/`.
+- Inspect existing manual cases and existing UI automation before proposing new coverage.
+- Reuse the repository's configured browser client, URLs, environments, and modes.
+- Explore only a safe local, development, test, or staging UI with configured browser tools.
+- Present exactly one test case at a time.
+- Save or update a testcase only after explicit `ACCEPT`.
+- Treat requested edits as `DISCUSS`; show the revised case before saving it.
+- Do not generate or modify Selenium automation during testcase design.
+- Do not create temporary shell, Python, JavaScript, or Selenium scripts for UI exploration.
+- Store testcase-specific extra pytest marks in `additional_pytest_marks`; do not duplicate derived `ui`, `regression`, `smoke`, or `e2e` marks there.
+
+## Selenium testcase implementation
+
+- Use `$selenium-test-implementer` with one accepted testcase path under `docs/testcase/<feature-slug>/TC-*.md`.
+- Validate the complete manual scenario in the safe running UI before implementing it.
+- Report testcase issues, potential product defects, environment blockers, and automation blockers instead of silently changing behavior.
+- Apply testcase revisions only after `ACCEPT CASE CHANGES`, then replay the revised scenario.
+- Search `tests/ui/`, `tests/smoke/`, and `tests/regression/` before creating a test; update or map equivalent coverage instead of duplicating it.
+- Place new UI tests under `tests/ui/<feature_package>/test_<workflow_module>.py`.
+- Preserve the current framework layers: locators in `src/locators`, low-level interactions in `src/pages`, business workflows in `src/flows`, and UI assertions in `src/assertions`.
+- Present and obtain `ACCEPT PLAN` before editing automation.
+- Keep test functions business-oriented; do not put selectors, direct WebDriver calls, waits, screenshots, or direct UI assertions in tests.
+- Repository-wide required marks for every generated UI test are `ui` and `regression`.
+- Smoke cases additionally receive `smoke`; E2E cases additionally receive `e2e`.
+- Resolve generated-test marks from `.agents/skills/selenium-test-implementer/config/marker-policy.yaml`; to require another mark on all future generated tests, append it to `required_for_all` and register it in the active pytest configuration.
+- Merge testcase-specific and explicitly requested additional registered marks; preserve compatible existing marks, normalize duplicates, and record the final set in testcase `automation_marks`.
+- Register missing marks only through an accepted implementation plan.
+- Create screenshot evidence for every logical UI assertion through the assertion/evidence layer.
+- Ask the user to run the discovered pytest command and provide output; do not claim a pass without that result.
+- Finalize testcase status as implemented only after a passing result and `ACCEPT AUTOMATION`.
+- Never commit without required permission and never push changes.
+
+
 ## Risks and Notes
 
 - <Known risk, assumption, limitation, or "None identified">

@@ -8,4 +8,9 @@ test cases incrementally.
 Generated artifact directories should be cleaned before pytest starts producing fresh
 Allure results, screenshots, logs, and downloads.
 
+Every Selenium test must use the `ui` marker. Use `smoke` for critical scheduled
+coverage and `regression` for broader coverage run manually. Use `e2e` for journeys
+that cross multiple functional boundaries; it may be combined with `smoke` or
+`regression`.
+
 When adding a new test area, fixture, marker, or test-data convention, update this file and the nearest relevant `AGENTS.md` file.

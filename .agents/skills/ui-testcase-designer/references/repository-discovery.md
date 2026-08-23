@@ -11,26 +11,69 @@ AGENTS.md
 AGENTS.override.md
 ```
 
-Start at the repository root and include more specific instructions down to the current working directory.
+Start at the repository root and read more specific instructions governing each path that may be inspected or changed.
 
-Repository instructions override this reference when they are more restrictive.
+For this repository, scoped `AGENTS.md` files may exist under configuration, source-layer, test, data, and workflow directories. Repository instructions override this reference when they are more restrictive.
 
-## 2. Identify the repository structure
+## 2. Identify the current repository structure
+
+Prioritize these established paths when present:
+
+```text
+config/default.yaml
+src/clients/
+src/config/
+src/models/
+src/webdriver/
+src/locators/
+src/pages/
+src/pages/components/
+src/flows/
+src/assertions/
+src/logging/
+tests/conftest.py
+tests/ui/
+tests/smoke/
+tests/regression/
+.github/workflows/ui-tests.yml
+pytest.ini
+pyproject.toml
+```
 
 Determine:
 
 - repository root;
-- application technology;
-- UI module locations;
-- test module locations;
-- documentation conventions;
-- application start instructions;
-- environment configuration;
-- browser or MCP tools currently available.
+- application and framework conventions;
+- manual testcase location;
+- UI automation locations;
+- configured URLs and environment aliases;
+- browser modes and driver/client entry points;
+- authentication and session bootstrap;
+- fixture, page, locator, flow, assertion, and screenshot conventions;
+- active pytest configuration and marker selection in CI;
+- application start instructions and available browser/MCP tools.
 
-Do not add a new dependency merely to perform discovery.
+Do not add a dependency or create a new client merely to perform discovery.
 
-## 3. Search manual test cases
+## 3. Exclude generated and dependency content
+
+Do not use these as sources for duplicate or framework discovery except when explicitly inspecting artifacts:
+
+```text
+.venv/
+.pytest_cache/
+.ruff_cache/
+**/__pycache__/
+dist/
+allure-report/
+allure-results/
+logs/
+screenshots/
+```
+
+Installed packages, bytecode, cache node IDs, screenshots, and generated reports are not repository-owned test implementations.
+
+## 4. Search manual test cases
 
 Search this location first:
 
@@ -42,52 +85,50 @@ Also inspect an existing legacy location such as `docs/testcases/` when the repo
 
 Search by:
 
-- feature name;
-- page name;
-- route;
+- feature name and synonyms;
+- page or route;
 - visible labels;
 - component names;
 - business action;
 - validation message;
 - related user journey;
-- synonyms for the same behavior.
+- test data class;
+- expected result.
 
 Inspect file contents, not only filenames.
 
-## 4. Search existing UI automation
+## 5. Search existing UI automation
 
-Inspect existing automation only as coverage evidence.
-
-Common locations and patterns include:
+Inspect all current test locations:
 
 ```text
-src/test/
-tests/
-test/
-e2e/
-ui-tests/
-automation/
-**/*Test.java
-**/*Tests.java
-**/*IT.java
-**/pages/
-**/pageobjects/
-**/page_objects/
-**/fixtures/
-**/testdata/
+tests/ui/
+tests/smoke/
+tests/regression/
 ```
 
-Also inspect:
+Use existing automation only as coverage evidence during testcase design. Do not edit it in this skill.
 
-- Selenium page objects;
-- test classes and suite definitions;
-- tags, groups, and categories;
-- test-data builders and fixtures;
-- navigation helpers;
-- configuration files;
-- CI definitions that select smoke, regression, or E2E suites.
+Also inspect supporting code when needed:
 
-Do not edit automation.
+```text
+src/locators/
+src/pages/
+src/pages/components/
+src/flows/
+src/assertions/
+tests/conftest.py
+```
+
+Check:
+
+- business behavior, not only names;
+- pytest marks and parameter rows;
+- page and component ownership;
+- reusable flows;
+- assertion behavior;
+- data/fixture requirements;
+- CI selections.
 
 Documented coverage and automated coverage are different facts. A scenario may be:
 
@@ -96,34 +137,26 @@ Documented coverage and automated coverage are different facts. A scenario may b
 - both;
 - neither.
 
-## 5. Inspect the implementation
+## 6. Inspect implementation evidence
 
 When useful, inspect:
 
-- routes;
-- UI components;
-- form definitions;
-- validators;
+- configured routes and URLs;
+- visible UI component behavior;
+- form definitions and validators;
 - visible error messages;
-- feature flags;
-- permissions;
-- state-management code;
-- API contracts only to understand UI behavior;
-- page objects and selectors only to locate controls.
+- feature flags and permissions;
+- state-management behavior;
+- API contracts only to understand observable UI behavior;
+- locator/page/flow/assertion code only to find the correct UI path and existing coverage.
 
-Do not turn selector or implementation details into manual test steps.
+Do not turn selectors or implementation details into manual test steps.
 
-## 6. Explore the running UI safely
+## 7. Explore the running UI safely
 
-Use an available configured browser tool or MCP integration.
+Reuse the configured UI client, environment resolution, WebDriver setup, and browser capability. Follow `browser-configuration-reuse.md`.
 
-Prefer headless mode where the tool supports it.
-
-Never create a temporary Selenium, shell, JavaScript, or Python script solely for exploration.
-
-Explore only when the environment and permissions are safe.
-
-Prefer:
+Prefer a safe environment:
 
 ```text
 local
@@ -132,7 +165,9 @@ test
 staging
 ```
 
-Treat production as read-only unless the user explicitly authorizes a safe test action.
+Prefer configured headless mode when available.
+
+Never create a temporary Selenium, shell, JavaScript, or Python script solely for exploration.
 
 Do not:
 
@@ -151,22 +186,15 @@ Safe observations may include:
 - inspecting visible content;
 - focusing controls;
 - opening non-destructive menus;
-- entering disposable values without submitting;
+- entering disposable values without committing an unsafe action;
 - triggering client-side validation;
 - observing enabled and disabled states;
 - navigating back and forward;
 - checking modal and notification behavior.
 
-Use credential aliases such as:
+Use semantic credential aliases. Never copy secrets into test-case files.
 
-```text
-<ACTIVE_TEST_USER_EMAIL>
-<ACTIVE_TEST_USER_PASSWORD>
-```
-
-Never copy secret values into test-case files.
-
-## 7. Record the verification basis
+## 8. Record the verification basis
 
 Each proposal must state one of:
 
@@ -179,7 +207,7 @@ Prompt only
 
 When UI exploration failed or was unavailable, state the reason briefly and do not claim verification.
 
-## 8. Detect duplicates and changes
+## 9. Detect duplicates and changes
 
 Compare a candidate with existing cases using:
 
@@ -208,4 +236,4 @@ An existing case covers part of the scenario. Propose an update or extension to 
 
 An existing case conflicts with current verified behavior. Propose an update to that file.
 
-A changed title or different sample data does not make a case new when the behavior and risk are equivalent.
+A changed title, directory, pytest mark, or sample value does not make a behaviorally equivalent case new.
